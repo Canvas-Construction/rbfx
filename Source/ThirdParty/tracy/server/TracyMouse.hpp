@@ -1,7 +1,7 @@
 #ifndef __TRACYMOUSE_HPP__
 #define __TRACYMOUSE_HPP__
 
-#include "imgui.h"
+#include <ImGui/imgui.h>
 
 namespace tracy
 {

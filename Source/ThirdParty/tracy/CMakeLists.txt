@@ -75,6 +75,7 @@ if (URHO3D_PROFILING)
             target_compile_definitions(${TARGET} PUBLIC ${TRACY_OPTIONS_PUBLIC} PRIVATE ${TRACY_OPTIONS_PRIVATE})
             if (MSVC)
                 target_compile_options(${TARGET} PRIVATE /permissive-)
+                target_link_libraries (${TARGET} PRIVATE Ws2_32)
             endif ()
             if (TRACY_NO_PARALLEL_ALGORITHMS)
                 target_compile_definitions(${TARGET} PUBLIC -DTRACY_NO_PARALLEL_ALGORITHMS=1)
@@ -106,8 +107,15 @@ if (URHO3D_PROFILING)
         # Lib for editor to easily consume profiler
         add_library (TracyEmbedded STATIC ${SERVER_SOURCE_FILES} ${COMMON_SOURCE_FILES})
         setup_tracy_profiler_target(TracyEmbedded)
-        target_include_directories(TracyEmbedded SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+        target_include_directories(TracyEmbedded SYSTEM PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
         target_compile_definitions(TracyEmbedded PRIVATE -DTRACY_NO_ROOT_WINDOW=1 -DTRACY_EMBED_WINDOW=1)
+        if (NOT MINI_URHO)
+            install (TARGETS TracyEmbedded EXPORT Urho3D
+                LIBRARY DESTINATION ${DEST_LIBRARY_DIR_CONFIG}
+                RUNTIME DESTINATION ${DEST_BIN_DIR_CONFIG}
+                ARCHIVE DESTINATION ${DEST_ARCHIVE_DIR_CONFIG}
+            )
+        endif ()
     endif ()
 
     if (NOT MINI_URHO)
@@ -122,7 +130,7 @@ endif ()
 if (NOT MINI_URHO)
     # Headers are required even in non-profiled builds so we can keep all profiling macros.
     install (FILES Tracy.hpp TracyC.h TracyOpenGL.hpp DESTINATION ${DEST_THIRDPARTY_HEADERS_DIR}/tracy/)
-    foreach (dir common client)
+    foreach (dir common client server zstd)
         install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/ DESTINATION ${DEST_THIRDPARTY_HEADERS_DIR}/tracy/${dir}/ FILES_MATCHING PATTERN *.h)
         install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/ DESTINATION ${DEST_THIRDPARTY_HEADERS_DIR}/tracy/${dir}/ FILES_MATCHING PATTERN *.hpp)
     endforeach ()

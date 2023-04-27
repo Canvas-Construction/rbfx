@@ -20,6 +20,8 @@
 // THE SOFTWARE.
 //
 
+#pragma once
+
 #include <Urho3D/Scene/Component.h>
 #include <Urho3D/Scene/PrefabResource.h>
 
