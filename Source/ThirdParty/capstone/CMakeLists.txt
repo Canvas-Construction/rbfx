@@ -497,7 +497,7 @@ set(ALL_HEADERS
     ${HEADERS_MOS65XX}
     )
 
-include_directories("${PROJECT_SOURCE_DIR}/include")
+#include_directories("${PROJECT_SOURCE_DIR}/include")
 
 ## properties
 # version info
@@ -594,35 +594,38 @@ source_group("Include\\EVM" FILES ${HEADERS_EVM})
 source_group("Include\\MOS65XX" FILES ${HEADERS_MOS65XX})
 
 # rbfx:
-target_include_directories(capstone-static PUBLIC include)
-return ()
+#target_include_directories(capstone-static PUBLIC include)
+target_include_directories(capstone-static PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+#return ()
 
 ### test library 64bit routine:
-include("GNUInstallDirs")
+#include("GNUInstallDirs")
 
 ## installation
-install(FILES ${HEADERS_COMMON} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/capstone)
-configure_file(capstone.pc.in ${CMAKE_BINARY_DIR}/capstone.pc @ONLY)
+install(FILES ${HEADERS_COMMON} DESTINATION ${DEST_THIRDPARTY_HEADERS_DIR}/capstone)
+#configure_file(capstone.pc.in ${CMAKE_BINARY_DIR}/capstone.pc @ONLY)
 
 if (CAPSTONE_BUILD_STATIC)
-    install(TARGETS capstone-static
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  install(TARGETS capstone-static EXPORT Urho3D
+    LIBRARY DESTINATION ${DEST_LIBRARY_DIR_CONFIG}
+    RUNTIME DESTINATION ${DEST_BIN_DIR_CONFIG}
+    ARCHIVE DESTINATION ${DEST_ARCHIVE_DIR_CONFIG}
+)
 endif ()
 
 if (CAPSTONE_BUILD_SHARED)
-    install(TARGETS capstone-shared
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  install(TARGETS capstone-shared EXPORT Urho3D
+    LIBRARY DESTINATION ${DEST_LIBRARY_DIR_CONFIG}
+    RUNTIME DESTINATION ${DEST_BIN_DIR_CONFIG}
+    ARCHIVE DESTINATION ${DEST_ARCHIVE_DIR_CONFIG}
+)
 endif ()
 
-if (CAPSTONE_BUILD_SHARED AND CAPSTONE_BUILD_CSTOOL)
-FILE(GLOB CSTOOL_SRC cstool/*.c)
-add_executable(cstool ${CSTOOL_SRC})
-target_link_libraries(cstool ${default-target})
+# if (CAPSTONE_BUILD_SHARED AND CAPSTONE_BUILD_CSTOOL)
+# FILE(GLOB CSTOOL_SRC cstool/*.c)
+# add_executable(cstool ${CSTOOL_SRC})
+# target_link_libraries(cstool ${default-target})
 
-install(TARGETS cstool DESTINATION bin)
-install(FILES ${CMAKE_BINARY_DIR}/capstone.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-endif ()
+# install(TARGETS cstool DESTINATION bin)
+# install(FILES ${CMAKE_BINARY_DIR}/capstone.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+# endif ()
