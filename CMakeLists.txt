@@ -98,9 +98,9 @@ else ()
     set (DEST_LIBRARY_DIR bin)
 endif ()
 
-if (MSVC OR "${CMAKE_GENERATOR}" STREQUAL "Xcode")
-    set (MULTI_CONFIG_PROJECT ON)
-endif ()
+# if (MSVC OR "${CMAKE_GENERATOR}" STREQUAL "Xcode")
+#    set (MULTI_CONFIG_PROJECT ON)
+# endif ()
 
 if (MULTI_CONFIG_PROJECT)
     set (DEST_BIN_DIR_CONFIG ${DEST_BIN_DIR}/$<CONFIG>)
