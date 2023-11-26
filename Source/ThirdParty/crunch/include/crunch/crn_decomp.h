@@ -26,6 +26,7 @@
 #endif
 #include <stdarg.h>
 #include <new>  // needed for placement new, _msize, _expand
+#include <cstdint>
 
 #define CRND_RESTRICT __restrict
 
